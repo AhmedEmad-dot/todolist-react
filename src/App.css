@@ -1,0 +1,55 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.iconbutton {
+  transition: all 0.3s !important;
+}
+.tocard {
+  transition: all 0.3s !important;
+}
+.iconbutton:hover {
+  background-color: rgb(201, 201, 201) !important;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2) !important;
+}
+.tocard:hover {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+@font-face {
+  font-family: cairo;
+  src: url(/cairofont/Cairo-Regular.ttf);
+  font-weight: normal;
+}
+@font-face {
+  font-family: cairo;
+  src: url(/cairofont/Cairo-Bold.ttf);
+  font-weight: bold;
+}
+@font-face {
+  font-family: cairo;
+  src: url(/cairofont/Cairo-Light.ttf);
+  font-weight: 200;
+}
+@font-face {
+  font-family: cairo;
+  src: url(/cairofont/Cairo-ExtraBold.ttf);
+  font-weight: 900;
+}
+.custom-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
