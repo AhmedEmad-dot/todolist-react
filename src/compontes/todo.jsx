@@ -6,41 +6,27 @@ import IconButton from '@mui/material/IconButton';
 import CheckIcon from '@mui/icons-material/Check';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useContext } from 'react';
-import { TodosContext } from '../context/todoscontext';
-import TextField from '@mui/material/TextField';
-
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-
-import {useToast} from "../context/toastutils"
+import { useTodos } from '../context/todoscontext';
+import React from 'react';
 
 
 
 
-export default function Todo({ todo , showDelte , showUpdate}) {
-console.log("to do")
+import {useToast} from "../context/toast"
 
 
-    const {todost, settodost} = useContext(TodosContext);
+
+ function Todo({ todo , showDelte , showUpdate}) {
+
+
+
+    const {todost, dispatch} = useTodos();
     const {showHideToast} = useToast();
     // Start handle Events ss
     
     function handlecheckbutton() {
-        const update = todost.map((t) => {
-            if (t.id == todo.id) {
-            t.isComplete = !t.isComplete
-            }
-            return t;
-        });
-        
-        settodost(update);
-        localStorage.setItem("todos", JSON.stringify(update))
+
+        dispatch({type : "checked" , payload: todo})
         showHideToast("نم التعديل بنجاح")
     }
 
@@ -98,3 +84,5 @@ console.log("to do")
         </>
     )
 }
+
+export default React.memo(Todo);

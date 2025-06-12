@@ -10,8 +10,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import { useState, useEffect, useMemo, useReducer} from 'react';
-import todosreducer from "../reducers/todosreducer"
+import { useState, useEffect, useMemo} from 'react';
+
 
 
 import Dialog from '@mui/material/Dialog';
@@ -19,18 +19,19 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { TodosContext } from "../context/todoscontext";
-import {useToast} from "../context/toastutils"
+import { useTodos } from "../context/todoscontext";
+import {useToast} from "../context/toast"
 
 
 export default function TodoList() {
   console.log("to do list")
   const [titleinput, settitleinput] = useState("");
-  const [todost , dispatch] = useReducer(todosreducer , [])
+  const {todost, dispatch} = useTodos();
   const [showDelte, setshowDelte] = useState(false);
   const [dialogTodo, setDialogTodo] = useState(null);
   const [showUpdate, setshowUpdate] = useState(false)
-  
+  const [showDeleteAll, setShowDeleteAll] = useState(false);
+
   const {showHideToast} = useToast();
   
   
@@ -50,10 +51,20 @@ export default function TodoList() {
     settitleinput("");
     showHideToast("تم الاضافة بنجاخ")
   };
-
+  function handledelteall() {
+    dispatch({ type: "deleteall" });
+    setShowDeleteAll(false);
+    showHideToast("تم حذف جميع المهام بنجاح");
+  }
+  function handleCloseDeleteAll() {
+    setShowDeleteAll(false);
+  }
   function openDeleteDialog(todo) {
 		setDialogTodo(todo);
 		setshowDelte(true);
+  }
+  function openDeleteAllDialog() {
+    setShowDeleteAll(true);
   }
   
   function handleCloseDelete() {
@@ -179,7 +190,31 @@ function handleConfirmUpdate() {
           <Button onClick={handleConfirmUpdate}>تعديل</Button>
         </DialogActions>
       </Dialog>
-            {/* End dialog for update */}
+      {/* End dialog for update */}
+      {/* Start dialog for delete all */}
+      <Dialog
+        open={showDeleteAll}
+        onClose={handleCloseDeleteAll}
+        style={{ direction: "rtl" }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          هل أنت متأكد من حذف جميع المهام؟
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            سيتم حذف جميع المهام بشكل نهائي ولا يمكن استرجاعها.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteAll}>إغلاق</Button>
+          <Button onClick={handledelteall} autoFocus>
+            حذف الكل
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* End dialog for delete all */}
        <Container  sx={{ minWidth: 500 }} maxWidth="md" style={{direction: "rtl"}}>
       <Card sx={{ minWidth: 500, maxHeight: "85vh", padding: "20px"}}  >
           <CardContent >
@@ -220,11 +255,17 @@ function handleConfirmUpdate() {
                   settitleinput(e.target.value);
               }} style={{width: "100%"}} id="outlined-basic" label="اضافة مهمة" variant="outlined" />
               </Grid>
-              <Grid size={4}>
+              <Grid size={2}>
                 <Button onClick={() => { 
                   handletodoclik();
-                }} style={{width: "100%", height: "100%", backgroundColor: "#d23232"}} variant="contained">اضافة</Button>
-              </Grid>
+                  }} style={{ width: "100%", height: "100%", backgroundColor: "#d23232" }} variant="contained">اضافة</Button>
+                </Grid>
+                <Grid size={2}>
+                <Button onClick={() => { 
+                  openDeleteAllDialog();
+                  }} style={{ width: "100%", height: "100%", backgroundColor: "#d23232" }} variant="contained">حدف الكل</Button>
+                </Grid>
+                
           </Grid>
         {/* End add button */}
             </div>

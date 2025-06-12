@@ -38,6 +38,23 @@ export default function Reducer(currentState, action) {
             localStorage.setItem("todos", JSON.stringify(update))
             return update
         }
+        case "checked": {
+            const update = currentState.map((t) => {
+                if (t.id == action.payload.id) {
+                    const updateiscompleted = {
+                    ...t, isComplete: !t.isComplete
+                    }
+                    return updateiscompleted
+                }
+                return t;
+            });
+            localStorage.setItem("todos", JSON.stringify(update))
+            return update
+        }
+        case "deleteall": {
+            localStorage.setItem("todos", JSON.stringify([]));
+            return [];
+            }
             
         default: {
             throw(Error("UnKnown action" + action.type) )
