@@ -9,9 +9,9 @@ import Todo from './todo';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { v4 as uuidv4 } from 'uuid';
-import { useState, useContext, useEffect, useMemo} from 'react';
 
+import { useState, useEffect, useMemo, useReducer} from 'react';
+import todosreducer from "../reducers/todosreducer"
 
 
 import Dialog from '@mui/material/Dialog';
@@ -26,7 +26,7 @@ import {useToast} from "../context/toastutils"
 export default function TodoList() {
   console.log("to do list")
   const [titleinput, settitleinput] = useState("");
-  const { todost, settodost } = useContext(TodosContext);
+  const [todost , dispatch] = useReducer(todosreducer , [])
   const [showDelte, setshowDelte] = useState(false);
   const [dialogTodo, setDialogTodo] = useState(null);
   const [showUpdate, setshowUpdate] = useState(false)
@@ -41,21 +41,12 @@ export default function TodoList() {
   }
   
   useEffect(() => {
-    const storgeTodos = JSON.parse(localStorage.getItem("todos")) ?? []
-    settodost(storgeTodos)
-  }, [settodost])
+    dispatch({type: "start"})
+  }, [])
 
   function handletodoclik() {
 
-    const newTodo = {
-      id: uuidv4(),
-      title: titleinput,
-      details: "",
-      isComplete: false
-    }
-    const updateTodos = [...todost, newTodo]
-    settodost(updateTodos);
-    localStorage.setItem("todos", JSON.stringify(updateTodos))
+    dispatch({type: "added" , payload: {title: titleinput} })
     settitleinput("");
     showHideToast("تم الاضافة بنجاخ")
   };
@@ -70,11 +61,7 @@ export default function TodoList() {
   }
 
   function handleConfirmDelte() {
-    const update = todost.filter((t) => {
-        return t.id != dialogTodo.id
-    })
-    settodost(update)
-    localStorage.setItem("todos", JSON.stringify(update))   
+    dispatch({type: "deleted" , payload: dialogTodo })
     setshowDelte(false)
     showHideToast("تم الحدف بنجاح")
   }
@@ -82,15 +69,7 @@ export default function TodoList() {
     setshowUpdate(false)
 }
 function handleConfirmUpdate() {
-    const update = todost.map((t) => {
-        if (t.id == dialogTodo.id) {
-            return {...t, title: dialogTodo.title, details: dialogTodo.details}
-        } else {
-            return t
-        }
-    })
-    settodost(update)
-    localStorage.setItem("todos", JSON.stringify(update))
+  dispatch({type: "updated" , payload: dialogTodo })
   setshowUpdate(false)
   showHideToast("تم التحديث بنجاح")
     
